@@ -1,4 +1,5 @@
 /*
+Endereço do contrato: 0xf137BAd585f4Bc72Eea01D889723b14EFf9a94c2
 SPDX-License-Identifier: CC-BY-4.0
 (c) Desenvolvido por Matheus Ricardo Tomas
 This work is licensed under a Creative Commons Attribution 4.0 International License.
@@ -43,8 +44,8 @@ contract TCCMatheus{
     }
 
     function transfereToken(address _enderecoDestino, uint256 _amount) public returns (bool){
-        require(meuSaldo() - _amount >= 10000, "O saldo do contrato deve ser sempre maior ou igual a 100,00 EXCT");
-        return exercicioToken.transferFrom(msg.sender, _enderecoDestino, _amount);
+        require(meuSaldo() - _amount >= 10000);
+        return exercicioToken.transfer(_enderecoDestino, _amount);
     }
 
     function meuSaldoNativo() public view returns(uint256) {
