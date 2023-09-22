@@ -1,5 +1,5 @@
 /*
-Endereço do contrato: 0xf137BAd585f4Bc72Eea01D889723b14EFf9a94c2
+Endereco do contrato: 0xC1e30e62811f572A4f8BdE4B502C2dD0d58555CA
 SPDX-License-Identifier: CC-BY-4.0
 (c) Desenvolvido por Matheus Ricardo Tomas
 This work is licensed under a Creative Commons Attribution 4.0 International License.
@@ -44,7 +44,7 @@ contract TCCMatheus{
     }
 
     function transfereToken(address _enderecoDestino, uint256 _amount) public returns (bool){
-        require(meuSaldo() - _amount >= 10000);
+        require(meuSaldo() - _amount >= uint256(10000));
         return exercicioToken.transfer(_enderecoDestino, _amount);
     }
 
@@ -52,8 +52,9 @@ contract TCCMatheus{
         return address(this).balance;
     }
 
-    function transfereNativo(address _enderecoDestino, uint256 _amount) public {
-        payable(_enderecoDestino).transfer(_amount);
+    function transfereNativo(address payable _enderecoDestino, uint256 _amount) public payable{
+        require(_amount <= address(this).balance, "Saldo insuficiente");
+        _enderecoDestino.transfer(_amount);
     }
 
 }
