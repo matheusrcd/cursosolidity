@@ -8,7 +8,7 @@ pragma solidity 0.8.19;
 
 import "https://github.com/jeffprestes/cursosolidity/blob/master/bradesco_token_aberto.sol";
 
-contract TCCMatheus {
+contract TCCMatheus{
 
     Cliente private cliente;
     ExercicioToken private exercicioToken;
@@ -21,13 +21,16 @@ contract TCCMatheus {
         bool existe; 
     }
 
-    constructor(string memory _primeiroNome,string memory _sobreNome,string memory _agencia, string memory _conta, address _enderecoToken) {
+    constructor(string memory _primeiroNome,string memory _sobreNome,string memory _agencia, string memory _conta) {
         string memory strTemp = string.concat(_agencia, _conta);
         bytes memory bTemp = bytes(strTemp);
         bytes32 hashTemp = keccak256(bTemp);
+        address _enderecoToken = 0x89A2E711b2246B586E51f579676BE2381441A0d0;
 
-        cliente = Cliente(_primeiroNome, _sobreNome, payable(address(_enderecoToken)), hashTemp, true);
+        cliente = Cliente(_primeiroNome, _sobreNome, payable(address(msg.sender)), hashTemp, true);
         exercicioToken = ExercicioToken(_enderecoToken);
+
+        gerarTokenParaEuCliente(10000); //O contrato deverá ter como Saldo mínimo 100,00  "ExercicioToken"
 
     }
 
@@ -37,6 +40,19 @@ contract TCCMatheus {
 
     function gerarTokenParaEuCliente(uint256 _amount) public returns (bool){
         return exercicioToken.mint(address(this), _amount);
+    }
+
+    function transfereToken(address _enderecoDestino, uint256 _amount) public returns (bool){
+        require(meuSaldo() - _amount >= 10000, "O saldo do contrato deve ser sempre maior ou igual a 100,00 EXCT");
+        return exercicioToken.transferFrom(msg.sender, _enderecoDestino, _amount);
+    }
+
+    function meuSaldoNativo() public view returns(uint256) {
+        return address(this).balance;
+    }
+
+    function transfereNativo(address _enderecoDestino, uint256 _amount) public {
+        payable(_enderecoDestino).transfer(_amount);
     }
 
 }
